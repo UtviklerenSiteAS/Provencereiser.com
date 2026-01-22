@@ -28,7 +28,7 @@ export const courses = [
     title: "Malekurs",
     norwegian: "Med Jonny Andvik",
     description: "Lær teknikker og få ny inspirasjon fra en av våre mest anerkjente malere, Jonny Andvik. Tidligere elev hos Odd Nerdrum.",
-    image: "/images/Malekurs_jonny_andvik.jpeg",
+    image: "/images/Malekurs_jonny_andvik.webp",
   },
   {
     title: "Malekurs",
