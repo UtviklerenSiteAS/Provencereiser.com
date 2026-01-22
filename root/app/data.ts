@@ -10,7 +10,7 @@ export const courses = [
     title: "Trøffeljakt",
     norwegian: "Med Trøffellauget",
     description: "Sammen med trøffellauget ønsker vi velkommen til jakt på skogens sorte gull i de små alper.",
-    image: "/images/Provencereiser/PROVENCE00003.jpeg",
+    image: "/images/PROVENCE00003.webp",
   },
   {
     title: "Malekurs",
