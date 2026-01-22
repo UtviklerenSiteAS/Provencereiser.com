@@ -18,8 +18,11 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Provence - Vineyard & Estate",
-  description: "Experience the timeless beauty of the French countryside",
+  title: "Provencereiser - Tematurer i Provence",
+  description: "Mat- og vinkurs, malekurs, yogakurs, fotokurs og trøffeljakt i vakre Provence",
+  icons: {
+    icon: "/images/Logo.png",
+  },
 };
 
 export default function RootLayout({

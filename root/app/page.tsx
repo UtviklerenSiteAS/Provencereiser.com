@@ -81,7 +81,7 @@ export default function Home() {
           <a href="#team" className="hover:text-amber-800 transition-colors">Sissa & Teamet</a>
         </div>
 
-        <a href="mailto:sissa@provencereiser.no" className="px-5 py-2 border border-amber-950/20 rounded-full text-[9px] font-bold uppercase tracking-widest text-amber-950 hover:bg-amber-950 hover:text-white transition-all">
+        <a href="mailto:sissa3@hotmail.com" className="px-5 py-2 border border-amber-950/20 rounded-full text-[9px] font-bold uppercase tracking-widest text-amber-950 hover:bg-amber-950 hover:text-white transition-all">
           Kontakt Oss
         </a>
       </nav>
@@ -202,7 +202,7 @@ export default function Home() {
                     Sissa Aabel startet Provencereiser i 2008. Som globetrotter av natur og erfaring vet hun hva som skal til for at nye steder skal gi gjenklang i hjerte.
                   </p>
                   <div className="pt-4">
-                    <a href="mailto:sissa@provencereiser.no" className="inline-block px-8 py-4 border border-amber-950/20 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-amber-950 hover:text-white transition-all text-amber-950">
+                    <a href="mailto:sissa3@hotmail.com" className="inline-block px-8 py-4 border border-amber-950/20 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-amber-950 hover:text-white transition-all text-amber-950">
                       Kontakt Sissa
                     </a>
                   </div>
@@ -254,7 +254,6 @@ export default function Home() {
             <ul className="space-y-4 text-sm text-stone-500 font-light">
               <li><a href="#about" className="hover:text-amber-800 transition-colors">Praktisk informasjon</a></li>
               <li><a href="#team" className="hover:text-amber-800 transition-colors">Vårt team</a></li>
-              <li><span className="text-amber-900/60 font-medium whitespace-nowrap">Medlem av Reisegarantifondet</span></li>
             </ul>
           </div>
 
@@ -264,8 +263,8 @@ export default function Home() {
               <p className="text-xs text-stone-500 font-light leading-relaxed">
                 Ta kontakt direkte med Sissa for spørsmål eller booking:
               </p>
-              <a href="mailto:sissa@provencereiser.no" className="text-sm font-serif italic text-amber-950 hover:text-amber-800 transition-colors underline decoration-amber-950/20 underline-offset-4">
-                sissa@provencereiser.no
+              <a href="mailto:sissa3@hotmail.com" className="text-sm font-serif italic text-amber-950 hover:text-amber-800 transition-colors underline decoration-amber-950/20 underline-offset-4">
+                sissa3@hotmail.com
               </a>
               <div className="pt-2">
                 <p className="text-[9px] uppercase tracking-widest text-stone-400 font-bold">Organisasjonsnr.</p>
