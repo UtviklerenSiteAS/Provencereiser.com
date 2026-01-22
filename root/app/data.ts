@@ -4,7 +4,7 @@ export const courses = [
     title: "Mat- og vinkurs",
     norwegian: "Med Trond Moi",
     description: "Opplev ekte matglede rundt langbordet. Trond Moi leder oss gjennom kulinariske høydepunkter og viner vi setter pris på.",
-    image: "/images/Provencereiser/58659978_10156064215367127_2925486423568023552_n.jpeg",
+    image: "/images/58659978_10156064215367127_2925486423568023552_n.webp",
   },
   {
     title: "Trøffeljakt",
