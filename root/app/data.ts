@@ -16,13 +16,13 @@ export const courses = [
     title: "Malekurs",
     norwegian: "Med Jan-Ove Tuv",
     description: "Vi dykker inn i det klassiske figurative under god veiledning av Jan-Ove Tuv, som kaller seg for kitchmaler. Tidligere elev hos Odd Nerdrum.",
-    image: "/images/Malekurs_jan_ove_tuv.jpg",
+    image: "/images/Malekurs_jan_ove_tuv.webp",
   },
   {
     title: "Malekurs",
     norwegian: "Med Tore Wilhelm Johansen",
     description: "Finn din kreative nerve og fargeglede sammen med Tore Wilhelm Johansen i inspirerende omgivelser.",
-    image: "/images/Malekurs_tore.jpg",
+    image: "/images/Malekurs_tore.webp",
   },
   {
     title: "Malekurs",

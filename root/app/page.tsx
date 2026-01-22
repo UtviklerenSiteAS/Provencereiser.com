@@ -210,10 +210,10 @@ export default function Home() {
               </div>
               <div className="relative aspect-square md:aspect-[4/3] bg-stone-50 overflow-hidden shadow-lg">
                 <Image
-                  src="/images/Provencereiser/sissa2.jpeg"
+                  src="/images/PROVENCE00037.jpeg"
                   alt="Sissa Aabel"
                   fill
-                  className="object-cover object-top opacity-90 sepia-[.1]"
+                  className="object-cover object-center opacity-90 sepia-[.1]"
                 />
               </div>
             </div>
