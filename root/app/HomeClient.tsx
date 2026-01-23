@@ -213,7 +213,7 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                             </div>
                             <div className="relative aspect-square md:aspect-[4/3] bg-stone-50 overflow-hidden shadow-lg">
                                 <Image
-                                    src="/images/Sissa.jpg"
+                                    src="/images/Sissa.jpeg"
                                     alt="Sissa Aabel"
                                     fill
                                     className="object-cover object-center opacity-90 sepia-[.1]"
