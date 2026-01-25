@@ -176,9 +176,24 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                                     />
                                     <div className="absolute inset-0 bg-amber-950/0 group-hover:bg-amber-950/5 transition-colors" />
                                 </div>
-                                <span className="text-[9px] uppercase tracking-widest text-amber-800/50 font-bold mb-2 block">{course.norwegian}</span>
-                                <h3 className="text-2xl font-serif text-amber-950 mb-3">{course.title}</h3>
-                                <p className="text-sm text-stone-500 leading-relaxed font-light">{course.description}</p>
+                                <div className="space-y-3">
+                                    {course.date && (
+                                        <span className="text-[10px] uppercase tracking-[0.4em] text-amber-800/60 font-bold block mb-1">
+                                            {course.date}
+                                        </span>
+                                    )}
+                                    <h3 className="text-2xl md:text-3xl font-serif text-amber-950 group-hover:text-amber-900 transition-colors">
+                                        {course.title}
+                                    </h3>
+                                    <span className="text-[9px] uppercase tracking-[0.2em] text-stone-400 font-bold block">
+                                        {course.norwegian}
+                                    </span>
+                                </div>
+                                <div className="mt-4">
+                                    <p className="text-sm text-stone-500 leading-relaxed font-light line-clamp-3">
+                                        {course.description}
+                                    </p>
+                                </div>
                             </div>
                         ))}
                     </div>
