@@ -124,14 +124,16 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                 </div>
 
                 {/* Content Overlay - Adjusted for left-aligned image balance */}
-                <div className="relative z-10 text-center lg:text-right lg:ml-auto lg:mr-20 px-6 max-w-4xl">
-                    <span className="text-[10px] md:text-[11px] uppercase tracking-[0.6em] text-amber-800/70 font-bold block mb-6 drop-shadow-sm">
-                        En opplevelse for sansene
-                    </span>
-                    <h1 className="text-[3.5rem] md:text-[7rem] font-serif tracking-tight text-amber-950 leading-[1.1] mb-12 drop-shadow-sm">
-                        Provencereiser <br />
-                    </h1>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center lg:justify-end">
+                <div className="relative z-10 text-center lg:text-right lg:ml-auto lg:mr-20 px-6 max-w-4xl h-full flex flex-col md:block">
+                    <div className="flex-1 flex flex-col justify-center md:block">
+                        <span className="text-[10px] md:text-[11px] uppercase tracking-[0.6em] text-amber-800/70 font-bold block mb-6 drop-shadow-sm">
+                            En opplevelse for sansene
+                        </span>
+                        <h1 className="text-[3.5rem] md:text-[7rem] font-serif tracking-tight text-amber-950 leading-[1.1] mb-12 drop-shadow-sm">
+                            Provencereiser <br />
+                        </h1>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center lg:justify-end mt-auto md:mt-0 pb-12 md:pb-0">
                         <a href="#courses" className="w-full sm:w-auto px-10 py-5 bg-amber-950 text-white text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-black transition-all shadow-lg text-center">
                             Se Tematurer
                         </a>
