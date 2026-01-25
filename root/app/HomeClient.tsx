@@ -1,48 +1,65 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { courses, teamMembers } from "./data";
 
 const ImageCarousel = ({ images }: { images: string[] }) => {
-    const [current, setCurrent] = useState(0);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (images.length === 0) return;
-        const timer = setInterval(() => {
-            setCurrent((prev) => (prev + 1) % images.length);
-        }, 4000);
-        return () => clearInterval(timer);
+        if (images.length === 0 || !scrollContainerRef.current) return;
+
+        const container = scrollContainerRef.current;
+        let animationFrameId: number;
+        const scrollSpeed = 0.5; // pixels per frame (adjust for faster/slower)
+
+        const smoothScroll = () => {
+            if (!container) return;
+
+            // Increment scroll position
+            container.scrollLeft += scrollSpeed;
+
+            // Reset to start when reaching the end
+            if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
+                container.scrollLeft = 0;
+            }
+
+            animationFrameId = requestAnimationFrame(smoothScroll);
+        };
+
+        animationFrameId = requestAnimationFrame(smoothScroll);
+
+        return () => cancelAnimationFrame(animationFrameId);
     }, [images.length]);
 
     if (images.length === 0) return null;
 
     return (
-        <div className="relative w-full h-full">
-            {images.map((src, index) => (
-                <div
-                    key={index}
-                    className={`absolute inset-0 transition-all duration-1000 ease-in-out ${index === current ? "opacity-100 scale-100" : "opacity-0 scale-105"
-                        }`}
-                >
-                    <Image
-                        src={src}
-                        alt={`Slide ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        priority={index === 0}
-                    />
+        <div className="relative -mx-8 md:-mx-20">
+            <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-hide">
+                <div className="flex gap-6 px-8 md:px-20 py-4 snap-x snap-mandatory">
+                    {images.map((src, index) => (
+                        <div
+                            key={index}
+                            className="flex-none w-80 snap-center group cursor-pointer"
+                        >
+                            <div className="relative h-96 bg-stone-100 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                                <Image
+                                    src={src}
+                                    alt={`Gallery image ${index + 1}`}
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                            </div>
+                        </div>
+                    ))}
                 </div>
-            ))}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
-                {images.map((_, index) => (
-                    <div
-                        key={index}
-                        className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${index === current ? "bg-white w-4" : "bg-white/40 hover:bg-white/60"
-                            }`}
-                    />
-                ))}
             </div>
+
+            {/* Gradient fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#fdfaf6] to-transparent pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#fdfaf6] to-transparent pointer-events-none" />
         </div>
     );
 };
@@ -50,6 +67,7 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
 export default function HomeClient({ carouselImages }: { carouselImages: string[] }) {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [scrolled, setScrolled] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -72,35 +90,107 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
     return (
         <main className="relative min-h-screen bg-[#fcfaf7] text-[#2c2520] selection:bg-amber-100">
             {/* Dynamic Navigation */}
-            <nav className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 px-8 py-6 md:px-20 flex items-center justify-between ${scrolled ? "bg-white/90 backdrop-blur-md shadow-sm py-4" : "bg-transparent"}`}>
-                <div className="flex flex-col">
+            <nav className={`fixed top-0 inset-x-0 z-[130] transition-all duration-500 px-8 py-6 md:px-20 flex items-center justify-between ${(scrolled && !isMenuOpen) ? "bg-white/90 backdrop-blur-md shadow-sm py-4" : "bg-transparent"}`}>
+                <div className={`flex flex-col transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
                     <span className="text-[8px] md:text-[9px] uppercase tracking-[0.4em] font-bold text-amber-900/60 leading-none mb-1">Sissa Aabel</span>
                     <div className="text-xl md:text-2xl font-serif tracking-tighter uppercase font-medium text-amber-950">Provencereiser</div>
                 </div>
 
                 <div className="hidden lg:flex items-center space-x-10 text-[9px] font-bold uppercase tracking-[0.2em] text-stone-600">
-                    <a href="#courses" className="hover:text-amber-800 transition-colors">Tematurer</a>
-                    <a href="#about" className="hover:text-amber-800 transition-colors">Oppholdet</a>
-                    <a href="#team" className="hover:text-amber-800 transition-colors">Sissa & Teamet</a>
+                    <a href="#about" className="group relative py-1 hover:text-amber-950 transition-colors">
+                        Historien
+                        <span className="absolute bottom-0 left-0 w-full h-[1px] bg-amber-800 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                    </a>
+                    <a href="#courses" className="group relative py-1 hover:text-amber-950 transition-colors">
+                        Tematurer
+                        <span className="absolute bottom-0 left-0 w-full h-[1px] bg-amber-800 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                    </a>
+                    <a href="#team" className="group relative py-1 hover:text-amber-950 transition-colors">
+                        Sissa & Provencereiser
+                        <span className="absolute bottom-0 left-0 w-full h-[1px] bg-amber-800 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                    </a>
                 </div>
 
-                <a href="mailto:sissa3@hotmail.com" className="px-5 py-2 border border-amber-950/20 rounded-full text-[9px] font-bold uppercase tracking-widest text-amber-950 hover:bg-amber-950 hover:text-white transition-all">
-                    Kontakt Oss
-                </a>
+                <div className="flex items-center space-x-4">
+                    <a href="mailto:sissa3@hotmail.com" className="hidden sm:block px-6 py-2.5 border border-amber-950/20 rounded-full text-[9px] font-bold uppercase tracking-widest text-amber-950 hover:bg-amber-950 hover:text-white hover:scale-105 active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md">
+                        Kontakt Oss
+                    </a>
+
+                    {/* Hamburger Button */}
+                    <button
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className="lg:hidden w-10 h-10 flex flex-col items-center justify-center space-y-1.5 focus:outline-none z-[110]"
+                        aria-label="Toggle Menu"
+                    >
+                        <span className={`w-6 h-0.5 bg-amber-950 transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
+                        <span className={`w-6 h-0.5 bg-amber-950 transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`} />
+                        <span className={`w-6 h-0.5 bg-amber-950 transition-all duration-300 ${isMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+                    </button>
+                </div>
             </nav>
 
+            {/* Mobile Menu Overlay */}
+            <div className={`fixed inset-0 z-[120] lg:hidden transition-all duration-500 ease-in-out ${isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}>
+                {/* Backdrop */}
+                <div
+                    className="absolute inset-0 bg-white/95 backdrop-blur-xl"
+                    onClick={() => setIsMenuOpen(false)}
+                />
+
+                {/* Menu Content */}
+                <div className="relative h-full flex flex-col items-center justify-center space-y-8 text-center p-8">
+                    <div className="flex flex-col mb-12">
+                        <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-amber-900/40 leading-none mb-2">Sissa Aabel</span>
+                        <div className="text-3xl font-serif tracking-tighter uppercase font-medium text-amber-950">Provencereiser</div>
+                    </div>
+
+                    <div className="flex flex-col space-y-8 text-sm font-bold uppercase tracking-[0.3em] text-stone-600">
+                        <a
+                            href="#about"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="hover:text-amber-900 transition-colors"
+                        >
+                            Historien
+                        </a>
+                        <a
+                            href="#courses"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="hover:text-amber-900 transition-colors"
+                        >
+                            Tematurer
+                        </a>
+                        <a
+                            href="#team"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="hover:text-amber-900 transition-colors"
+                        >
+                            Sissa & Provencereiser
+                        </a>
+                    </div>
+
+                    <div className="pt-12">
+                        <a
+                            href="mailto:sissa3@hotmail.com"
+                            className="inline-block px-10 py-4 bg-amber-950 text-white rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl hover:bg-amber-900 transition-all"
+                        >
+                            Kontakt Oss
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             {/* Hero Section */}
-            <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-32">
-                {/* Layered Images Background - Aligned to the left */}
-                <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-start">
-                    <div className="relative w-[100vw] h-[100vh] md:w-[70vw] lg:w-[60vw] opacity-60 -translate-x-10 md:-translate-x-20">
+            <section className="relative min-h-screen flex flex-col md:items-center md:justify-center overflow-hidden pt-32 md:pt-0">
+                {/* Layered Images Background - Aligned to the top on mobile, left on desktop */}
+                <div className="relative md:absolute inset-0 z-0 pointer-events-none flex items-center justify-center md:items-center md:justify-start flex-none md:flex-1 h-[45vh] md:h-full">
+                    <div className="relative w-full h-full md:w-[70vw] lg:w-[60vw] opacity-60 md:-translate-x-10 lg:-translate-x-20">
                         {/* Base Layer: Grape Vine */}
                         <div className="absolute inset-0">
                             <Image
                                 src="/images/Grape_vine.png"
                                 alt="Grape Vine"
                                 fill
-                                className="object-contain object-left"
+                                className="object-contain object-center md:object-left"
                                 priority
                             />
                         </div>
@@ -116,28 +206,28 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                                 src="/images/Sommer_fugler.png"
                                 alt="Butterflies"
                                 fill
-                                className="object-contain object-left"
+                                className="object-contain object-center md:object-left"
                                 priority
                             />
                         </div>
                     </div>
                 </div>
 
-                {/* Content Overlay - Adjusted for left-aligned image balance */}
-                <div className="relative z-10 text-center lg:text-right lg:ml-auto lg:mr-20 px-6 max-w-4xl h-full flex flex-col md:block">
-                    <div className="flex-1 flex flex-col justify-center md:block">
-                        <span className="text-[10px] md:text-[11px] uppercase tracking-[0.6em] text-amber-800/70 font-bold block mb-6 drop-shadow-sm">
+                {/* Content Overlay - Bottom on mobile, Center/Right on desktop */}
+                <div className="relative z-10 text-center lg:text-right lg:ml-auto lg:mr-20 px-6 max-w-4xl flex-none md:flex-1 flex flex-col justify-end md:justify-center pb-12 md:pb-0">
+                    <div className="mb-8 md:mb-12">
+                        <span className="text-[10px] md:text-[11px] uppercase tracking-[0.6em] text-amber-800/70 font-bold block mb-3 md:mb-6 drop-shadow-sm">
                             En opplevelse for sansene
                         </span>
-                        <h1 className="text-[3.5rem] md:text-[7rem] font-serif tracking-tight text-amber-950 leading-[1.1] mb-12 drop-shadow-sm">
+                        <h1 className="text-[3.8rem] md:text-[4.5rem] lg:text-[6.5rem] xl:text-[5.5rem] font-serif tracking-tight text-amber-950 leading-[1.1] drop-shadow-sm">
                             Provencereiser <br />
                         </h1>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center lg:justify-end mt-auto md:mt-0 pb-12 md:pb-0">
-                        <a href="#courses" className="w-full sm:w-auto px-10 py-5 bg-amber-950 text-white text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-black transition-all shadow-lg text-center">
+                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center lg:justify-end">
+                        <a href="#courses" className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-white/50 backdrop-blur-sm border border-amber-950/10 text-amber-950 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white transition-all shadow-sm text-center">
                             Se Tematurer
                         </a>
-                        <a href="#about" className="w-full sm:w-auto px-10 py-5 bg-white/50 backdrop-blur-sm border border-amber-950/10 text-amber-950 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white transition-all shadow-sm text-center">
+                        <a href="#about" className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-white/50 backdrop-blur-sm border border-amber-950/10 text-amber-950 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white transition-all shadow-sm text-center">
                             Utforsk Oppholdet
                         </a>
                     </div>
@@ -148,23 +238,39 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                 </div>
             </section>
 
+            {/* The Experience (Image Carousel) */}
+            <section id="about" className="py-32 bg-[#fdfaf6] relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-8 md:px-20">
+                    <h2 className="text-5xl md:text-6xl font-serif text-amber-950 text-center mb-12">Historien</h2>
+                    <div className="text-center max-w-3xl mx-auto font-serif text-xl md:text-2xl italic text-amber-950/80 leading-relaxed mb-12">
+                        <p className="mb-4">Historien begynte ytterst i skjærgården på Sørlandet. Som ung satt jeg og så mot horisonten, og visste at det fantes mer der ute.</p>
+                        <p className="mb-4">Den dagen jeg valgte å følge drømmen og reise, åpnet verden seg. Menneskemøter, landskap og øyeblikk festet seg – og slapp aldri taket.</p>
+                        <p>Reiser er min livshistorie. Å gå etter drømmene mine er ikke et valg, men en måte å leve på.</p>
+                    </div>
+                    <ImageCarousel images={carouselImages} />
+                </div>
+            </section>
+
             {/* Themed Journeys Section */}
             <section id="courses" className="py-32 px-8 md:px-20 bg-white">
-                <div className="max-w-7xl mx-auto">
+                <div className="max-w-6xl mx-auto">
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
                         <div className="max-w-2xl">
                             <span className="text-amber-800/60 text-[10px] uppercase tracking-[0.5em] font-bold mb-4 block">Våre spesialiteter</span>
                             <h2 className="text-5xl md:text-7xl font-serif text-amber-950 mb-6 leading-tight">Tematurer</h2>
                             <p className="text-lg text-stone-600 font-light leading-relaxed">
-                                Vi arrangerer mat- og vinkurs, malekurs, yogakurs, fotokurs og trøffeljakt i vakre Provence. Vi reiser i små grupper på 10 til 14 personer.
+                                Vi har lagt våre tematurer til Provence – et landskap som inviterer deg inn. Langs vinrutene ligger landsbyene som perler på en snor, omgitt av vinmarker og sølvgrønne olivenlunder. Luften er varm og klar, lyset mykt og levende. Her går skuldrene ned av seg selv.<br /><br />
+
+                                I Provence samles livet rundt matmarkedene. Lukten av solmodne tomater, nybakt brød og urter som fortsatt bærer varmen fra jorden. Råvarene er enkle, ekte og kortreiste – og det er nettopp her våre mat- og vinkurs hører hjemme. Smaker deles, vin skjenkes, samtaler får tid. Det handler ikke om oppskrifter, men om glede.<br /><br />
+
+                                Like naturlig var det å gi rom for malekurs her. Lyset i Provence er berømt av en grunn. Det lokker frem fargene – og kreativiteten. Med staffeli og pensel i hånden, og dyktige malelærere ved vår side, får dagene flyte i takt med blikket og øyeblikket.<br /><br />
+
+                                Dette er glade dager i Provence. Dager som setter seg i kroppen. Og som vekker lysten til å bli med.<br /><br />
                             </p>
                         </div>
-                        <a href="#" className="text-[10px] uppercase tracking-[0.4em] font-bold text-amber-950 border-b border-amber-950/30 pb-2 hover:border-amber-950 transition-all whitespace-nowrap">
-                            Se alle programmer
-                        </a>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-x-16 lg:gap-y-20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-10">
                         {courses.map((course, i) => (
                             <div key={i} className="group cursor-pointer">
                                 <div className="relative aspect-[4/5] overflow-hidden bg-stone-100 mb-6 shadow-sm">
@@ -182,29 +288,20 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                                             {course.date}
                                         </span>
                                     )}
-                                    <h3 className="text-2xl md:text-3xl font-serif text-amber-950 group-hover:text-amber-900 transition-colors">
+                                    <h3 className="text-xl md:text-2xl font-serif text-amber-950 group-hover:text-amber-900 transition-colors">
                                         {course.title}
                                     </h3>
                                     <span className="text-[9px] uppercase tracking-[0.2em] text-stone-400 font-bold block">
                                         {course.norwegian}
                                     </span>
                                 </div>
-                                <div className="mt-4">
-                                    <p className="text-sm text-stone-500 leading-relaxed font-light line-clamp-3">
+                                <div className="mt-3">
+                                    <p className="text-xs text-stone-500 leading-relaxed font-light">
                                         {course.description}
                                     </p>
                                 </div>
                             </div>
                         ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* The Experience (Image Carousel) */}
-            <section id="about" className="py-32 bg-[#fdfaf6] relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-8 md:px-20">
-                    <div className="relative aspect-[16/9] w-full bg-stone-100 shadow-2xl overflow-hidden group">
-                        <ImageCarousel images={carouselImages} />
                     </div>
                 </div>
             </section>
@@ -216,10 +313,16 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                     <div className="mb-20">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
                             <div>
-                                <h2 className="text-5xl md:text-6xl font-serif text-amber-950 mb-8">Sissa & Teamet</h2>
+                                <h2 className="text-5xl md:text-6xl font-serif text-amber-950 mb-8">Sissa & Provencereiser</h2>
                                 <div className="space-y-6">
                                     <p className="text-lg text-stone-600 font-light leading-relaxed">
-                                        Sissa Aabel startet Provencereiser i 2008. Som globetrotter av natur og erfaring vet hun hva som skal til for at nye steder skal gi gjenklang i hjerte.
+                                        Sissa er eier og drivkraften bak Provencereiser. I 2008 fanget hun en drøm – og lot den få form. Provence, med sine vinranker, olivenlunder og sitt særegne lys, ble stedet der drømmen slo rot. Slik ble Provencereiser til. Opplevelser skapt for å deles.<br /><br />
+
+                                        I dag deler Sissa tiden sin mellom dette vakre landskapet i Sør-Frankrike og Sørlandet. Hun beveger seg helst langs veiene i Europa i sin lille, kvikke to-seter – og turen må gjerne ta minst en uke. For hun har ikke hastverk. Europa rommer for mye skjønnhet til å forseres. Det er i bevegelsen, i omveiene og pausene, at opplevelsene får sette seg.<br /><br />
+
+                                        Rundt de lange matbordene i Provence inviterer Sissa til rause måltider, gode samtaler og historier som får leve. Favorittene kommer ofte fra havet – og hun deler dem gjerne med et glass burgunder. Drømmemiddagen kunne hun tenkt seg å dele med Michelle Obama, Farah Pahlavi eller Gro Harlem Brundtland. Sterke kvinner. Gode samtaler. Tid.<br /><br />
+
+                                        Provencereiser er fortsatt en levende drøm. En invitasjon til å være til stede, sanse mer og reise langsommere. Og Sissa drømmer fremdeles. Kanskje sammen med deg.
                                     </p>
                                     <div className="pt-4">
                                         <a href="mailto:sissa3@hotmail.com" className="inline-block px-8 py-4 border border-amber-950/20 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-amber-950 hover:text-white transition-all text-amber-950">
@@ -228,28 +331,15 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                                     </div>
                                 </div>
                             </div>
-                            <div className="relative aspect-square md:aspect-[4/3] bg-stone-50 overflow-hidden shadow-lg">
+                            <div className="relative aspect-[4/5] md:aspect-[3/4] bg-stone-50 overflow-hidden shadow-lg">
                                 <Image
-                                    src="/images/Sissa.jpeg"
+                                    src="/images/Sissa.png"
                                     alt="Sissa Aabel"
                                     fill
                                     className="object-cover object-center opacity-90 sepia-[.1]"
                                 />
                             </div>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-10 border-t border-amber-950/10">
-                        {teamMembers.map((person, i) => (
-                            <div key={i} className="space-y-3">
-                                <div className="w-10 h-[1px] bg-amber-950/30 mb-4" />
-                                <h4 className="text-xl font-serif text-amber-950">{person.name}</h4>
-                                <span className="text-[9px] uppercase tracking-widest text-amber-800/60 font-bold block">{person.role}</span>
-                                <p className="text-sm text-stone-500 font-light leading-relaxed">
-                                    {person.desc}
-                                </p>
-                            </div>
-                        ))}
                     </div>
                 </div>
             </section>
@@ -259,11 +349,9 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20">
                     <div className="md:col-span-2">
                         <div className="text-2xl font-serif tracking-tighter uppercase font-medium text-amber-950 mb-8">Provencereiser</div>
-                        <p className="max-w-sm text-stone-500 font-light text-sm leading-relaxed mb-10">
-                            Startet i 2008 av Sissa Aabel, en globetrotter som vet hva som skal til for at nye steder skal gi gjenklang i hjerte og sinn.
-                        </p>
                         <div className="flex space-x-8">
                             <a href="https://www.facebook.com/100033242962669/about/" className="text-[10px] font-bold uppercase tracking-widest text-stone-400 hover:text-amber-800 transition-colors">Facebook</a>
+                            <a href="https://www.instagram.com/provencereiser/" className="text-[10px] font-bold uppercase tracking-widest text-stone-400 hover:text-amber-800 transition-colors">Instagram</a>
                         </div>
                     </div>
 
