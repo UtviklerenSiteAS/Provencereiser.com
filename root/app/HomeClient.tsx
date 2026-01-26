@@ -38,11 +38,11 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
     return (
         <div className="relative -mx-8 md:-mx-20">
             <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-hide">
-                <div className="flex gap-6 px-8 md:px-20 py-4 snap-x snap-mandatory">
+                <div className="flex gap-6 px-8 md:px-20 py-4">
                     {images.map((src, index) => (
                         <div
                             key={index}
-                            className="flex-none w-80 snap-center group cursor-pointer"
+                            className="flex-none w-80 group cursor-pointer"
                         >
                             <div className="relative h-96 bg-stone-100 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                                 <Image
@@ -57,9 +57,9 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
                 </div>
             </div>
 
-            {/* Gradient fade edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#fdfaf6] to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#fdfaf6] to-transparent pointer-events-none" />
+            {/* Gradient fade edges - Smaller and less vibrant on mobile */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 md:w-20 bg-gradient-to-r from-[#fdfaf6] to-transparent pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-8 md:w-20 bg-gradient-to-l from-[#fdfaf6] to-transparent pointer-events-none" />
         </div>
     );
 };
