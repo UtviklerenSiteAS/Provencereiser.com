@@ -213,14 +213,14 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                     </div>
                 </div>
 
-                {/* Content Overlay - Bottom on mobile, Center/Right on desktop */}
-                <div className="relative z-10 text-center lg:text-right lg:ml-auto lg:mr-20 px-6 max-w-4xl flex-none md:flex-1 flex flex-col justify-end md:justify-center pb-12 md:pb-0">
+                {/* Content Overlay - Centered on mobile, Right on desktop */}
+                <div className="relative z-10 text-center lg:text-right lg:ml-auto lg:mr-20 px-6 max-w-4xl flex-none md:flex-1 flex flex-col justify-center pb-12 md:pb-0">
                     <div className="mb-8 md:mb-12">
                         <span className="text-[10px] md:text-[11px] uppercase tracking-[0.6em] text-amber-800/70 font-bold block mb-3 md:mb-6 drop-shadow-sm">
                             En opplevelse for sansene
                         </span>
-                        <h1 className="text-[3.8rem] md:text-[4.5rem] lg:text-[6.5rem] xl:text-[5.5rem] font-serif tracking-tight text-amber-950 leading-[1.1] drop-shadow-sm">
-                            Provencereiser <br />
+                        <h1 className="text-[2.8rem] md:text-[4.5rem] lg:text-[6.5rem] xl:text-[5.5rem] font-serif tracking-tight text-amber-950 leading-[1.1] drop-shadow-sm">
+                            Provencereiser
                         </h1>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center lg:justify-end">
