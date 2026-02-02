@@ -224,11 +224,11 @@ export default function HomeClient({ carouselImages }: { carouselImages: string[
                         </h1>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center lg:justify-end">
-                        <a href="#courses" className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-white/50 backdrop-blur-sm border border-amber-950/10 text-amber-950 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white transition-all shadow-sm text-center">
-                            Se Tematurer
-                        </a>
                         <a href="#about" className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-white/50 backdrop-blur-sm border border-amber-950/10 text-amber-950 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white transition-all shadow-sm text-center">
                             Utforsk Oppholdet
+                        </a>
+                        <a href="#courses" className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 bg-white/50 backdrop-blur-sm border border-amber-950/10 text-amber-950 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white transition-all shadow-sm text-center">
+                            Se Tematurer
                         </a>
                     </div>
                 </div>
