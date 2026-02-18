@@ -6,38 +6,84 @@ import { courses, teamMembers } from "./data";
 
 const ImageCarousel = ({ images }: { images: string[] }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [isPaused, setIsPaused] = useState(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        if (images.length === 0 || !scrollContainerRef.current) return;
+        return () => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (images.length === 0 || !scrollContainerRef.current || isPaused) return;
 
         const container = scrollContainerRef.current;
         let animationFrameId: number;
-        const scrollSpeed = 0.5; // pixels per frame (adjust for faster/slower)
+        let lastTimestamp: number | null = null;
 
-        const smoothScroll = () => {
-            if (!container) return;
+        // Start from current scroll position
+        let currentScroll = container.scrollLeft;
+        const scrollSpeed = 40; // Pixels per second
 
-            // Increment scroll position
-            container.scrollLeft += scrollSpeed;
-
-            // Reset to start when reaching the end
-            if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
-                container.scrollLeft = 0;
+        const smoothScroll = (timestamp: number) => {
+            if (!lastTimestamp) {
+                lastTimestamp = timestamp;
+                animationFrameId = requestAnimationFrame(smoothScroll);
+                return;
             }
 
+            const deltaTime = (timestamp - lastTimestamp) / 1000;
+            lastTimestamp = timestamp;
+
+            // Sync with actual scroll position in case of manual scroll or drift
+            if (Math.abs(container.scrollLeft - currentScroll) > 1) {
+                currentScroll = container.scrollLeft;
+            }
+
+            currentScroll += scrollSpeed * deltaTime;
+
+            // Reset to start when reaching the end
+            if (currentScroll >= container.scrollWidth - container.clientWidth) {
+                currentScroll = 0;
+            }
+
+            container.scrollLeft = currentScroll;
             animationFrameId = requestAnimationFrame(smoothScroll);
         };
 
         animationFrameId = requestAnimationFrame(smoothScroll);
 
-        return () => cancelAnimationFrame(animationFrameId);
-    }, [images.length]);
+        return () => {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+        };
+    }, [images.length, isPaused]);
+
+    const handleInteractionStart = () => {
+        setIsPaused(true);
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+
+    const handleInteractionEnd = () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+            setIsPaused(false);
+        }, 1500); // Wait 1.5s after interaction before resuming
+    };
 
     if (images.length === 0) return null;
 
     return (
-        <div className="relative -mx-8 md:-mx-20">
-            <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-hide">
+        <div
+            className="relative -mx-8 md:-mx-20"
+            onMouseEnter={handleInteractionStart}
+            onMouseLeave={handleInteractionEnd}
+            onTouchStart={handleInteractionStart}
+            onTouchEnd={handleInteractionEnd}
+        >
+            <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-hide scroll-auto">
                 <div className="flex gap-6 px-8 md:px-20 py-4">
                     {images.map((src, index) => (
                         <div
